@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const peopleService = require("../services/peopleService");
+const peopleService = require("../services/PeopleService");
 const { ValRequestPerson } = require("../validations/validationRequest");
 
 // GET /people
@@ -44,7 +44,7 @@ router.post("/people", async (req, res) => {
     if (!value) {
       return;
     }
-    const newPerson = await peopleService.createPerson();
+    const newPerson = await peopleService.createPerson(value);
     res.status(201).json(newPerson);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -56,7 +56,7 @@ router.put("/people/:id", async (req, res) => {
   const { id } = req.params;
   const { name, age } = req.body;
   try {
-    const updatedPerson = await peopleService.updatePerson(id, name, age);
+    const updatedPerson = await peopleService.updatePersonById(id, name, age);
     if (updatedPerson) {
       res.json(updatedPerson);
     } else {
@@ -71,7 +71,7 @@ router.put("/people/:id", async (req, res) => {
 router.delete("/people/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const deletedPerson = await peopleService.deletePerson(id);
+    const deletedPerson = await peopleService.deletePersonById(id);
     if (deletedPerson) {
       res.json(deletedPerson);
     } else {

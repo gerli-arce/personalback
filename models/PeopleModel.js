@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../assets/db/conection.js").sequelize();
 
 const Branch = require("./BranchModel.js");
+const User = require("./UserModel.js");
 
 const People = sequelize.define("peoples", {
   id: {
@@ -60,6 +61,26 @@ const People = sequelize.define("peoples", {
       key: "id",
     },
     allowNull: false,
+  },
+  creation_date: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  _creation_user: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  update_date: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  _update_user: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  status: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
   },
 });
 

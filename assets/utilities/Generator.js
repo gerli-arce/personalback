@@ -1,4 +1,4 @@
-export const GnId = (long = "short") => {
+const GnId = (long = "short") => {
   const caracteres =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const cadenaAleatoria = [];
@@ -9,3 +9,5 @@ export const GnId = (long = "short") => {
   }
   return cadenaAleatoria.join("");
 };
+
+module.exports = GnId

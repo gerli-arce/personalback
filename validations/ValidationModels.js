@@ -31,6 +31,11 @@ const personSchema = Joi.object({
   address: Joi.string(),
   type: Joi.string().required(),
   _branch: Joi.number().required(),
+  creation_date: Joi.date(),
+  _creation_user: Joi.number(),
+  update_date: Joi.date(),
+  _update_user: Joi.number(),
+  status: Joi.boolean(),
 });
 
 

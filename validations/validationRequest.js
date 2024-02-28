@@ -1,3 +1,4 @@
+const GnId = require("../assets/utilities/Generator");
 const {
   messages,
   branchSchema,
@@ -68,6 +69,8 @@ const ValRequestPerson = async (req, res) => {
         .json({ error: "No se han enviado datos para procesar la solicitud" });
       return false;
     } else {
+      const pp = req.body;
+      pp.relative_id = GnId();
       const { error, value } = personSchema.validate(req.body, {
         abortEarly: false,
         messages: messages,
