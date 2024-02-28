@@ -4,8 +4,13 @@ const {
   branchSchema,
   roleSchema,
   personSchema,
+  userSchemam,
 } = require("./ValidationModels");
 const { isEmpty } = require("lodash");
+const { generatePasswordHash } = require("../assets/utilities/auth");
+
+const {getDateTime} = require("../assets/utilities/Date");
+
 
 const ValRequestBranch = async (req, res) => {
   try {
@@ -90,4 +95,41 @@ const ValRequestPerson = async (req, res) => {
   }
 };
 
-module.exports = { ValRequestBranch, ValRequestRole, ValRequestPerson };
+const ValRequestUser = async (req, res) => {
+  try {
+    if (isEmpty(req.body)) {
+      res
+        .status(400)
+        .json({ error: "No se han enviado datos para procesar la solicitud" });
+      return false;
+    } else {
+      const pp = req.body;
+      pp.password = await generatePasswordHash(pp.password);
+      pp.relative_id = GnId();
+      pp.creation_date = getDateTime();
+      pp.update_date = getDateTime();
+      const { error, value } = userSchemam.validate(req.body, {
+        abortEarly: false,
+        messages: messages,
+      });
+      if (error) {
+        const errors = error.details.map((detail) =>
+          detail.message.replace(/"/g, "")
+        );
+        res.status(400).json({ error: errors });
+        return;
+      }
+      return value;
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error en los datos de entrada" });
+    return false;
+  }
+};
+
+module.exports = {
+  ValRequestBranch,
+  ValRequestRole,
+  ValRequestPerson,
+  ValRequestUser,
+};

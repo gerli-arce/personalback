@@ -29,9 +29,11 @@ const User = sequelize.define("user", {
   },
   relative_id: {
     type: DataTypes.STRING(30),
+    allowNull: false,
   },
   auth_token: {
     type: DataTypes.STRING(64),
+    allowNull:true,
   },
   _person: {
     type: DataTypes.INTEGER,
@@ -39,6 +41,7 @@ const User = sequelize.define("user", {
       model: People,
       key: "id",
     },
+    allowNull: false,
   },
   _branch: {
     type: DataTypes.INTEGER,
@@ -46,18 +49,23 @@ const User = sequelize.define("user", {
       model: Branch,
       key: "id",
     },
+    allowNull: false,
   },
   image_type: {
     type: DataTypes.STRING(26),
+    allowNull: true,
   },
   image_full: {
     type: DataTypes.BLOB("long"),
+    allowNull: true,
   },
   image_mini: {
     type: DataTypes.BLOB("medium"),
+    allowNull: true,
   },
   origin: {
     type: DataTypes.STRING(60),
+    allowNull: true,
   },
   _role: {
     type: DataTypes.INTEGER,
@@ -65,18 +73,27 @@ const User = sequelize.define("user", {
       model: Role,
       key: "id",
     },
+    allowNull: false,
   },
   creation_date: {
     type: DataTypes.DATE,
+    allowNull: false,
   },
   _creation_user: {
     type: DataTypes.INTEGER,
+    allowNull: true,
   },
   update_date: {
     type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
   _update_user: {
     type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  status: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
   },
 });
 

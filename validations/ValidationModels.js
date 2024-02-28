@@ -38,6 +38,26 @@ const personSchema = Joi.object({
   status: Joi.boolean(),
 });
 
+const userSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+  email: Joi.string().email().required(),
+  relative_id: Joi.string().required(),
+  auth_token: Joi.string(),
+  _person: Joi.number().required(),
+  _branch: Joi.number().required(),
+  image_type: Joi.string(),
+  image_full: Joi.binary(),
+  image_mini: Joi.binary(),
+  origin: Joi.string(),
+  _role: Joi.string().required(),
+  creation_date: Joi.date().required(),
+  _creation_user: Joi.number(),
+  update_date: Joi.date(),
+  _update_user: Joi.number(),
+  status: Joi.boolean(),
+});
+
 
 const messages = {
   "any.required": '"{#label}" es requerido',
@@ -106,4 +126,5 @@ module.exports = {
   branchSchema,
   roleSchema,
   personSchema,
+  userSchema,
 };
