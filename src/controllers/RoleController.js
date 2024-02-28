@@ -1,17 +1,17 @@
-const BranchValReq = require("../validations/BranchValReq");
+const RoleValReq = require("../validations/RoleValReq");
 const { isEmpty } = require("lodash");
 const {
-  createBranch,
-  getAllBranch,
-  getBranchById,
-  updateBranch,
-  deleteBranch,
-} = require("../services/BranchService");
+    createRole,
+    getAllRoles,
+    getRoleById,
+    updateRole,
+    deleteRole,
+} = require("../services/RoleService");
 
 const GetAll = async (req, res) => {
   try {
-    const branches = await getAllBranch();
-    res.status(200).json(branches);
+    const response = await getAllRoles();
+    res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ error: "Ocurrio un error en la operación" });
   }
@@ -19,11 +19,11 @@ const GetAll = async (req, res) => {
 
 const GetById = async (req, res) => {
   try {
-    const branch = await getBranchById(req.params.id);
-    if (branch) {
-      res.json(branch);
+    const response = await getRoleById(req.params.id);
+    if (response) {
+      res.json(response);
     } else {
-      res.status(404).json({ error: "Sucursal no encontrada" });
+      res.status(404).json({ error: "Rol no encontrado" });
     }
   } catch (error) {
     res.status(400).json({ error: "Ocurrio un error en la operación" });
@@ -38,12 +38,12 @@ const Create = async (req, res) => {
         .json({ error: "No se han enviado datos para procesar la solicitud" });
       return false;
     } else {
-      const branch = await BranchValReq(req, res);
-      if (!branch) {
+      const request = await RoleValReq(req, res);
+      if (!request) {
         return;
       }
-      const newBranch = await createBranch(branch);
-      res.status(201).json(newBranch);
+      const response = await createRole(request);
+      res.status(201).json(response);
     }
   } catch (error) {
     res
@@ -60,15 +60,15 @@ const Update = async (req, res) => {
         .json({ error: "No se han enviado datos para procesar la solicitud" });
       return false;
     } else {
-      const branch = await BranchValReq(req, res);
-      if (!branch) {
+      const request = await RoleValReq(req.body, res);
+      if (!request) {
         return;
       }
-      const updatedBranch = await updateBranch(req.params.id, branch);
-      if (updatedBranch) {
-        res.json(updatedBranch);
+      const response = await updateRole(req.params.id, request);
+      if (response) {
+        res.json(response);
       } else {
-        res.status(404).json({ error: "Sucursal no exciste" });
+        res.status(404).json({ error: "Rol no exciste" });
       }
     }
   } catch (error) {
@@ -78,9 +78,9 @@ const Update = async (req, res) => {
 
 const Delete = async (req, res) => {
   try {
-    const deletedBranch = await deleteBranch(req.params.id);
-    if (deletedBranch) {
-      res.json({ message: "Sucursal eliminada correctamente" });
+    const response = await deleteRole(req.params.id);
+    if (response) {
+      res.json({ message: "Rol eliminado correctamente" });
     } else {
       res.status(404).json({ error: "Sucursal no exciste" });
     }

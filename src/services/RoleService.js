@@ -52,12 +52,12 @@ async function deleteRole(roleId) {
   try {
     const role = await Role.findByPk(roleId);
     if (!role) {
-      throw new Error('Role not found');
+      throw new Error('Rol no encontrado');
     }
     await role.destroy();
     return role;
   } catch (error) {
-    throw new Error('Failed to delete role');
+    throw new Error('Error al eliminar rol');
   }
 }
 
