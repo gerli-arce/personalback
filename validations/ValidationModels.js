@@ -18,6 +18,22 @@ const roleSchema = Joi.object({
   status: Joi.boolean(),
 });
 
+const personSchema = Joi.object({
+  document_type: Joi.string().required(),
+  document_number: Joi.string().required(),
+  relative_id: Joi.string().required(),
+  name: Joi.string().required(),
+  lastname: Joi.string().required(),
+  birthdate: Joi.date(),
+  gender: Joi.string(),
+  email: Joi.string().email(),
+  phone: Joi.string(),
+  address: Joi.string(),
+  type: Joi.string().required(),
+  _branch: Joi.number().required(),
+});
+
+
 const messages = {
   "any.required": '"{#label}" es requerido',
   "any.empty": '"{#label}" no puede estar vacío',
@@ -84,4 +100,5 @@ module.exports = {
   messages,
   branchSchema,
   roleSchema,
+  personSchema,
 };
