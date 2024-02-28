@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const UsersService = require('../services/UserService');
 
+const {ValRequestUser} = require("../validations/validationRequest");
+
 router.get('/', async (req, res) => {
     try {
         res.json({ message: 'Hello from users' });
@@ -13,8 +15,12 @@ router.get('/', async (req, res) => {
 // Create a new user
 router.post('/users', async (req, res) => {
     try {
-        const newUser = req.body;
-        const createdUser = await UsersService.createUser(newUser);
+        const value = await ValRequestUser(req, res);
+        if (!value) {
+          return;
+        }
+        const createdUser = await UsersService.createUser(value);
+        delete createdUser.password;
         res.json(createdUser);
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });

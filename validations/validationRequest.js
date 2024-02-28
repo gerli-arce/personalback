@@ -4,7 +4,7 @@ const {
   branchSchema,
   roleSchema,
   personSchema,
-  userSchemam,
+  userSchema,
 } = require("./ValidationModels");
 const { isEmpty } = require("lodash");
 const { generatePasswordHash } = require("../assets/utilities/auth");
@@ -104,11 +104,13 @@ const ValRequestUser = async (req, res) => {
       return false;
     } else {
       const pp = req.body;
+      console.log(pp);
       pp.password = await generatePasswordHash(pp.password);
       pp.relative_id = GnId();
       pp.creation_date = getDateTime();
       pp.update_date = getDateTime();
-      const { error, value } = userSchemam.validate(req.body, {
+      console.log(pp);
+      const { error, value } = userSchema.validate(pp, {
         abortEarly: false,
         messages: messages,
       });
@@ -122,6 +124,7 @@ const ValRequestUser = async (req, res) => {
       return value;
     }
   } catch (error) {
+    console.error(error)
     res.status(500).json({ error: "Error en los datos de entrada" });
     return false;
   }

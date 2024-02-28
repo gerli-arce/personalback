@@ -2,7 +2,9 @@ const { User } = require("../models");
 
 async function getAllUsers() {
   try {
-    const users = await User.findAll(); // Retrieve all users from the database
+    const users = await User.findAll({
+      attributes: { exclude: ['password'] } // Excluye la columna 'password'
+    }); 
     return users;
   } catch (error) {
     console.error("Error retrieving users:", error);

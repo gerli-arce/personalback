@@ -50,7 +50,7 @@ const userSchema = Joi.object({
   image_full: Joi.binary(),
   image_mini: Joi.binary(),
   origin: Joi.string(),
-  _role: Joi.string().required(),
+  _role: Joi.number().required(),
   creation_date: Joi.date().required(),
   _creation_user: Joi.number(),
   update_date: Joi.date(),

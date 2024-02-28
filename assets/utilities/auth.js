@@ -2,12 +2,15 @@ const bcrypt = require("bcrypt");
 
 // Función para generar un hash de una contraseña
 const generatePasswordHash = async (password) => {
-  const saltRounds = 30;
+  const saltRounds = 10;
+  console.log('iniciando sifrado de contraseña')
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, saltRounds, function (err, hash) {
       if (err) {
+        console.log('error al cifrar contraseña: '+err)
         reject(err);
       } else {
+        console.log('contraseña cifrada: '+hash)
         resolve(hash);
       }
     });
