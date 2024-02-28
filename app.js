@@ -3,8 +3,7 @@ const cors = require("cors");
 const bodyParser = require('body-parser');
 
 const User = require("./models/UserModel.js");
-
-const BranchRoutes = require("./routes/BranchRoutes.js");
+const {BranchRoutes, RoleRoutes} = require("./routes");
 
 
 const app = express();
@@ -18,6 +17,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/branches', BranchRoutes);
+app.use('/roles', RoleRoutes);
 
 app.use(express.json());
 

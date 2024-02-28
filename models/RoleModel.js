@@ -11,18 +11,24 @@ const Role = sequelize.define(
     },
     role: {
       type: DataTypes.STRING(50),
+      allowNull: false,
     },
     priority: {
       type: DataTypes.INTEGER,
+      allowNull: false,
     },
     permissions:{
         type: DataTypes.JSON,
+        allowNull: false,
     },
     description:{
         type: DataTypes.STRING(320),
+        allowNull: true,
     },
     status: {
       type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: true,
     },
   },
   {

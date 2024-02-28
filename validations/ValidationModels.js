@@ -10,9 +10,18 @@ const branchSchema = Joi.object({
   status: Joi.boolean().required(),
 });
 
+const roleSchema = Joi.object({
+  role: Joi.string().required(),
+  priority: Joi.number().required(),
+  permissions: Joi.array().required(),
+  description: Joi.string(),
+  status: Joi.boolean(),
+});
+
 const messages = {
   "any.required": '"{#label}" es requerido',
   "any.empty": '"{#label}" no puede estar vacío',
+  "array.base": '"{#label}" debe ser un array',
   "any.unknown": '"{#label}" no está permitido',
   "any.invalid": '"{#label}" contiene un valor inválido',
   "any.allowOnly": '"{#label}" debe ser uno de {#valids}',
@@ -74,4 +83,5 @@ const messages = {
 module.exports = {
   messages,
   branchSchema,
+  roleSchema,
 };

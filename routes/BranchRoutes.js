@@ -8,11 +8,11 @@ const {
   deleteBranch,
 } = require("../services/BranchService");
 
-const { messages, branchSchema } = require("../validations/ValidationModels");
+const {ValRequestBranch} = require("../validations/validationRequest");
 
 router.get("/", async (req, res) => {
   try {
-    res.send("Hola mundo");
+    res.send("Hola branch");
   } catch (error) {
     res.status(500).json({ error: "Internal Server Errorssss" });
   }
@@ -44,20 +44,11 @@ router.get("/branches/:id", async (req, res) => {
 
 // POST /branches
 router.post("/branches", async (req, res) => {
-  const { error, value } = branchSchema.validate(req.body, {
-    abortEarly: false,
-    messages: messages,
-  });
-
-  if (error) {
-    const errors = error.details.map((detail) =>
-      detail.message.replace(/"/g, "")
-    );
-    res.status(400).json({ error: errors });
-    return;
-  }
-
   try {
+    const value = await ValRequestBranch(req, res);
+    if (!value) {
+      return;
+    }
     const newBranch = await createBranch(value);
     res.status(201).json(newBranch);
   } catch (error) {

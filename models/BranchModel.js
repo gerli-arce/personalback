@@ -13,7 +13,7 @@ const Branch = sequelize.define(
       type: DataTypes.STRING(120),
       allowNull: false,
     },
-    correative: {
+    correlative: {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
