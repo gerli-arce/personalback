@@ -1,4 +1,4 @@
-const GnId = require("../assets/utilities/Generator");
+const GnId = require("../assets/Generator");
 const {
   messages,
   branchSchema,
@@ -7,9 +7,9 @@ const {
   userSchema,
 } = require("./ValidationModels");
 const { isEmpty } = require("lodash");
-const { generatePasswordHash } = require("../assets/utilities/auth");
+const { generatePasswordHash } = require("../assets/auth");
 
-const {getDateTime} = require("../assets/utilities/Date");
+const {getDateTime} = require("../assets/Date");
 
 
 const ValRequestBranch = async (req, res) => {

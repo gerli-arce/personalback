@@ -51,12 +51,12 @@ async function deleteBranch(branchId) {
   try {
     const branch = await Branch.findByPk(branchId);
     if (!branch) {
-      throw new Error('Branch not found');
+      return false;
     }
     await branch.destroy();
     return branch;
   } catch (error) {
-    throw new Error('Failed to delete branch');
+    throw new Error({error: "Fallo al eliminar sucursal"});
   }
 }
 

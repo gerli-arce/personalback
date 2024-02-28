@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../assets/db/conection.js").sequelize();
+const sequelize = require("../config/db/conection.js").sequelize();
 
 const Branch = sequelize.define(
   "branches",

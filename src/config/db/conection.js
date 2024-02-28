@@ -6,10 +6,12 @@ const conection = () => {
   return mysql.createConnection(config);
 };
 
-const sequelize  = () =>{ return new Sequelize("system", "root", "", {
+const sequelize = () => {
+  return new Sequelize("system", "root", "", {
     host: "localhost",
     dialect: "mysql",
-  });}
-  
-  module.exports.sequelize = sequelize; // Cambiar esta línea
-  module.exports.conection = conection;
+  });
+};
+
+module.exports.sequelize = sequelize; // Cambiar esta línea
+module.exports.conection = conection;

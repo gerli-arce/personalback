@@ -59,7 +59,7 @@ const userSchema = Joi.object({
 });
 
 
-const messages = {
+const Messages = {
   "any.required": '"{#label}" es requerido',
   "any.empty": '"{#label}" no puede estar vacío',
   "array.base": '"{#label}" debe ser un array',
@@ -122,7 +122,7 @@ const messages = {
 };
 
 module.exports = {
-  messages,
+  Messages,
   branchSchema,
   roleSchema,
   personSchema,
