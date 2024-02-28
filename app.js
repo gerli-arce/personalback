@@ -1,23 +1,25 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require('body-parser');
 
-const Employe = require("./assets/models/employe.js");
-const User = require("./assets/models/user.js");
+const User = require("./models/UserModel.js");
 
-var app = express();
+const BranchRoutes = require("./routes/BranchRoutes.js");
+
+
+const app = express();
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
 
 app.use(cors());
 
-app.use(express.json());
+app.use('/branches', BranchRoutes);
 
-app.get("/employees", async function (req, res) {
-  try {
-    const employees = await Employe.findAll();
-    res.json(employees);
-  } catch (err) {
-    res.status(500).send("Error al consultar la base de datos");
-  }
-});
+app.use(express.json());
 
 app.get("/users/create", async function (req, res) {
   try {
@@ -33,5 +35,5 @@ app.get("/", function (req, res) {
 });
 
 app.listen(8080, function () {
-  console.log("Servidor escuchando en el puerto 3000");
+  console.log("Servidor escuchando en el puerto 8080");
 });
