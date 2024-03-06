@@ -3,7 +3,6 @@ const router = express.Router();
 
 const RoleController = require('../controllers/RoleController');
 
-
 router.get("/", async (req, res) => {
     try {
       res.send("Hola Role");

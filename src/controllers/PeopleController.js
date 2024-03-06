@@ -1,17 +1,19 @@
-const RoleValReq = require("../validations/RoleValReq");
+const PersonValReq = require("../validations/PersonValReq");
 const { isEmpty } = require("lodash");
-const {
-    createRole,
-    getAllRoles,
-    getRoleById,
-    updateRole,
-    deleteRole,
-} = require("../services/RoleService");
+const GnId = require("../assets/Generator");
+const{
+    getAllPeople,
+    getPersonById,
+    createPerson,
+    updatePersonById,
+    deletePersonById,
+  } = require("../services/PeopleService");
 
 const GetAll = async (req, res) => {
   try {
-    const response = await getAllRoles();
-    res.status(200).json(response);
+    const response = await getAllPeople();
+    console.log(response)
+    res.json(response);
   } catch (error) {
     res.status(400).json({ error: "Ocurrio un error en la operación" });
   }
@@ -19,14 +21,15 @@ const GetAll = async (req, res) => {
 
 const GetById = async (req, res) => {
   try {
-    const response = await getRoleById(req.params.id);
+    const response = await getPersonById(req.params.id);
+    console.log(req.params.id)
     if (response) {
       res.json(response);
     } else {
-      res.status(404).json({ error: "Rol no encontrado" });
+      res.status(404).json({ error: "Persona no encontrada" });
     }
   } catch (error) {
-    res.status(400).json({ error: "Ocurrio un error en la operación" });
+    res.status(400).json({ error: "Ocurrio un error en la operación: "+error });
   }
 };
 
@@ -38,11 +41,15 @@ const Create = async (req, res) => {
         .json({ error: "No se han enviado datos para procesar la solicitud" });
       return false;
     } else {
-      const request = await RoleValReq(req, res);
+      const request = await PersonValReq(req, res);
+
       if (!request) {
         return;
       }
-      const response = await createRole(request);
+
+      request.relative_id =  GnId();
+      console.log(request)
+      const response = await createPerson(request);
       res.status(201).json(response);
     }
   } catch (error) {
@@ -60,15 +67,15 @@ const Update = async (req, res) => {
         .json({ error: "No se han enviado datos para procesar la solicitud" });
       return false;
     } else {
-      const request = await RoleValReq(req.body, res);
+      const request = await PersonValReq(req, res);
       if (!request) {
         return;
       }
-      const response = await updateRole(req.params.id, request);
+      const response = await updatePersonById(req.params.id, request);
       if (response) {
         res.json(response);
       } else {
-        res.status(404).json({ error: "Rol no exciste" });
+        res.status(404).json({ error: "Persona no exciste" });
       }
     }
   } catch (error) {
@@ -78,14 +85,14 @@ const Update = async (req, res) => {
 
 const Delete = async (req, res) => {
   try {
-    const response = await deleteRole(req.params.id);
+    const response = await deletePersonById(req.params.id);
     if (response) {
-      res.json({ message: "Rol eliminado correctamente" });
+      res.json({ message: "Persona eliminado correctamente" });
     } else {
-      res.status(404).json({ error: "Rol no exciste" });
+      res.status(404).json({ error: "Persona no exciste" });
     }
   } catch (error) {
-    res.status(400).json({ error: "Ocurrio un error en la operación"});
+    res.status(400).json({ error: "Ocurrio un error en la operación: "+error});
   }
 };
 

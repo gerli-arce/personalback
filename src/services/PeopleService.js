@@ -13,13 +13,13 @@ async function getAllPeople() {
 // Get a person by ID
 async function getPersonById(id) {
   try {
-    const person = await People.findById(id);
+    const person = await People.findByPk(id);
     if (!person) {
       throw new Error("Person not found");
     }
     return person;
   } catch (error) {
-    throw new Error("Error retrieving person");
+    throw new Error("Error retrieving person: "+error);
   }
 }
 
@@ -38,7 +38,7 @@ async function createPerson(data) {
 // Update a person by ID
 async function updatePersonById(id, data) {
   try {
-    const person = await People.findById(id);
+    const person = await People.findByPk(id);
     if (!person) {
       throw new Error("Person not found");
     }
@@ -54,14 +54,14 @@ async function updatePersonById(id, data) {
 // Delete a person by ID
 async function deletePersonById(id) {
   try {
-    const person = await People.findById(id);
+    const person = await People.findByPk(id);
     if (!person) {
       throw new Error("Person not found");
     }
-    await person.remove();
+    await person.destroy();
     return person;
   } catch (error) {
-    throw new Error("Error deleting person");
+    throw new Error("Error deleting person: "+error);
   }
 }
 
