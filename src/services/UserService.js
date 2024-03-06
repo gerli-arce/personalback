@@ -3,8 +3,8 @@ const { User } = require("../models");
 async function getAllUsers() {
   try {
     const users = await User.findAll({
-      attributes: { exclude: ['password'] } // Excluye la columna 'password'
-    }); 
+      attributes: { exclude: ["password"] }, // Excluye la columna 'password'
+    });
     return users;
   } catch (error) {
     console.error("Error retrieving users:", error);
@@ -14,7 +14,9 @@ async function getAllUsers() {
 
 async function getUserById(id) {
   try {
-    const user = await User.findByPk(id); // Find a user by its ID
+    const user = await User.findByPk(id, {
+      attributes: { exclude: ["password"] },
+    }); // Find a user by its ID
     return user;
   } catch (error) {
     console.error(`Error retrieving user with ID ${id}:`, error);
@@ -52,7 +54,8 @@ async function deleteUser(id) {
     if (!user) {
       throw new Error(`User with ID ${id} not found`);
     }
-    await user.destroy(); // Delete the user from the database
+    await user.destroy();
+    return true 
   } catch (error) {
     console.error(`Error deleting user with ID ${id}:`, error);
     throw error;

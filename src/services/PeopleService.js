@@ -1,4 +1,3 @@
-// Import the required modules
 const { People } = require("../models");
 // Get all people
 async function getAllPeople() {
