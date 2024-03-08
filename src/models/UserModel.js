@@ -37,18 +37,10 @@ const User = sequelize.define("user", {
   },
   _person: {
     type: DataTypes.INTEGER,
-    references: {
-      model: People,
-      key: "id",
-    },
     allowNull: false,
   },
   _branch: {
     type: DataTypes.INTEGER,
-    references: {
-      model: Branch,
-      key: "id",
-    },
     allowNull: false,
   },
   image_type: {
@@ -69,10 +61,6 @@ const User = sequelize.define("user", {
   },
   _role: {
     type: DataTypes.INTEGER,
-    references: {
-      model: Role,
-      key: "id",
-    },
     allowNull: false,
   },
   creation_date: {
@@ -117,35 +105,35 @@ User.belongsTo(People, {
 
 
 // Ahora que User está definido, podemos agregar las referencias
-User._creation_user = {
-  type: DataTypes.INTEGER,
-  references: {
-    model: User,
-    key: "id",
-  },
-};
+// User._creation_user = {
+//   type: DataTypes.INTEGER,
+//   references: {
+//     model: User,
+//     key: "id",
+//   },
+// };
 
-User._update_user = {
-  type: DataTypes.INTEGER,
-  references: {
-    model: User,
-    key: "id",
-  },
-};
+// User._update_user = {
+//   type: DataTypes.INTEGER,
+//   references: {
+//     model: User,
+//     key: "id",
+//   },
+// };
 
 // Ahora puedes establecer las relaciones
-User.belongsTo(User, {
-  foreignKey: "_creation_user",
-  targetKey: "id",
-});
+// User.belongsTo(User, {
+//   foreignKey: "_creation_user",
+//   targetKey: "id",
+// });
 
-User.belongsTo(User, {
-  foreignKey: "_update_user",
-  targetKey: "id",
-});
+// User.belongsTo(User, {
+//   foreignKey: "_update_user",
+//   targetKey: "id",
+// });
 
 // Sincronizar el modelo con la base de datos
-User.sync({ alter : true})
+User.sync({ force : true})
   .then(() => {
     console.log("Tabla users creada con éxito");
   })

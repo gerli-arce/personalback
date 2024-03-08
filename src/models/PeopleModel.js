@@ -56,10 +56,6 @@ const People = sequelize.define("peoples", {
   },
   _branch: {
     type: DataTypes.INTEGER,
-    references: {
-      model: Branch,
-      key: "id",
-    },
     allowNull: false,
   },
   creation_date: {
@@ -84,12 +80,12 @@ const People = sequelize.define("peoples", {
   },
 });
 
-People.belongsTo(Branch, {
-  foreignKey: "_branch",
-  targetKey: "id",
-});
+// People.belongsTo(Branch, {
+//   foreignKey: "_branch",
+//   targetKey: "id",
+// });
 
-People.sync({ alter: true })
+People.sync()
   .then(() => {
     console.log("Tabla people creada con éxito");
   })

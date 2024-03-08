@@ -1,23 +1,29 @@
 {
-  "name": "personal",
+  "name": "personalback",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gerli-arce/personalback.git"
+  },
+  "author": "yopirata",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gerli-arce/personalback/issues"
+  },
+  "homepage": "https://github.com/gerli-arce/personalback#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "install": "^0.13.0",
+    "express": "^4.18.3",
     "joi": "^17.12.2",
     "moment": "^2.30.1",
-    "mysql2": "^3.9.1",
+    "mysql2": "^3.9.2",
     "node-mysql": "^0.4.2",
-    "sequelize": "^6.37.0"
+    "sequelize": "^6.37.1"
   }
 }
