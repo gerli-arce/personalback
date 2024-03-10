@@ -5,9 +5,9 @@ const AuthController = require('../Controller/AuthController')
 
 router.get("/", async (req, res) => {
   try {
-    res.send("Hola session");
+    await AuthController.Init(req, res);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Errorssss" });
+    res.status(500).json({ error: "Internal Server Err "+error });
   }
 });
 
