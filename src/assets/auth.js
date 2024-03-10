@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require('dotenv').config();
-const key = process.env.KEY
+require("dotenv").config();
+const key = process.env.KEY;
+const { Role } = require("../models");
 
 // Función para generar un hash de una contraseña
 const generatePasswordHash = async (password) => {
@@ -43,30 +44,30 @@ const jwtValidation = (req, res, next) => {
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-      // Manejar el caso de token expirado
       res.status(401).json({ error: "Token expirado" });
+    } else if (error instanceof jwt.JsonWebTokenError) {
+      res
+        .status(401)
+        .json({ error: "Token invalido, por favor inicie sesión" });
     } else {
-      // Manejar otros tipos de errores
-      res.status(400).json({ error: "Ocurrio un error en la operación: " + error });
+      res
+        .status(400)
+        .json({ error: "Ocurrio un error en la operación: " + error });
     }
   }
 };
 
-const authorization = (req, res, next) => {
-  const rolesPermitidos = ['admin', 'editor']; // Ejemplo
-  const userRole = req.user.role; // Obtienes el rol del usuario de la solicitud
-
-  if (rolesPermitidos.includes(userRole)) {
+const authorization = (module, permission) => {
+  return (req, res, next) => {
+    const permissions = JSON.parse(req.cookies.permissions);
+    console.log("permissions: " + permissions);
     next();
-  } else {
-    res.status(403).json({ error: 'No tienes permiso para acceder a esta ruta.' });
-  }
+  };
 };
-
-
 
 module.exports = {
   generatePasswordHash,
   comparePasswordToHash,
   jwtValidation,
+  authorization,
 };

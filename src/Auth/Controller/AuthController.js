@@ -1,15 +1,14 @@
-const { User } = require("../../models");
+const { User, Role } = require("../../models");
 const { comparePasswordToHash } = require("../../assets/auth");
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
-require('dotenv').config();
-
+require("dotenv").config();
 
 const key = process.env.KEY;
 
 const Login = async (req, res) => {
   try {
-    console.log(key)
+    console.log(key);
     var pp = req.body;
     let user = await User.findOne({
       where: {
@@ -36,23 +35,39 @@ const Login = async (req, res) => {
       {
         sub,
         name,
-        exp
+        exp,
       },
       key
     );
 
     var response = {};
     response.data = user;
-    response.data.auth_token = token;
+    // response.data.auth_token = token;
     response.data.password = undefined;
-    response.message="Operacion correcta" 
+    response.message = "Operacion correcta";
     response.status = 200;
 
-    console.log(token)
-    console.log(response)
-    // user.key = key;
+    const expires = moment().endOf("month").toDate();
+    res.cookie("auth_token", token, {
+      expires,
+      httpOnly: true,
+      // secure: true, // Comenta esta línea para pruebas locales
+    });
 
-    res.cookie("auth_token", token)
+    res.cookie("user", JSON.stringify(response)),
+      {
+        expires,
+        httpOnly: true,
+        // secure: true, // Comenta esta línea para pruebas locales
+      };
+
+    const role = await Role.findByPk(user._role);
+
+    res.cookie("permissions", JSON.stringify(role.permissions), {
+      expires,
+      httpOnly: true,
+      // secure: true, // Comenta esta línea para pruebas locales
+    });
 
     res.json(response);
   } catch (error) {
@@ -62,16 +77,27 @@ const Login = async (req, res) => {
   }
 };
 
-const Init = async(req, res)=>{
+const Logout = async (req, res) => {
   try {
-    if(!req.headers.authorization){
-      res.status(400)
-      .json({ error: "Los heades deven ser enviados" })
+    res.clearCookie("auth_token");
+    res.clearCookie("user");
+    res.json({ message: "Sesión cerrada" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ error: "Ocurrio un error en la operación: " + error });
+  }
+};
+
+const Init = async (req, res) => {
+  try {
+    if (!req.headers.authorization) {
+      res.status(400).json({ error: "Los heades deven ser enviados" });
     }
     const token = req.headers.authorization.split(" ")[1];
-    const payload = jwt.verify(token, key)
-    console.log(payload)
-  
+    const payload = jwt.verify(token, key);
+    console.log(payload);
+
     // if(moment().unix() > payload.exp){
     //   return res.status(401).send({error:"token expired"})
     // }
@@ -82,9 +108,11 @@ const Init = async(req, res)=>{
       res.status(401).json({ error: "Token expirado" });
     } else {
       // Manejar otros tipos de errores
-      res.status(400).json({ error: "Ocurrio un error en la operación: " + error });
+      res
+        .status(400)
+        .json({ error: "Ocurrio un error en la operación: " + error });
     }
   }
-}
+};
 
-module.exports = { Login, Init };
+module.exports = { Login, Logout, Init };

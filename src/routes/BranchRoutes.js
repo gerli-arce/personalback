@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const {authorization} = require("../assets/auth")
 const {
   createBranch,
   getAllBranch,
@@ -10,7 +11,6 @@ const {
 
 const BranchController = require("../controllers/BranchController");
 
-
 router.get("/", async (req, res) => {
   try {
     res.send("Hola branch");
@@ -20,9 +20,8 @@ router.get("/", async (req, res) => {
 });
 
 // GET /branches
-router.get("/branches", async (req, res) => {
+router.get("/branches",  authorization('branches', 'read'),  async (req, res) => {
   try {
-    console.log(req.body)
     await BranchController.GetAll(req, res);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error: "+error });

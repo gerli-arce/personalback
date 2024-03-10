@@ -19,4 +19,12 @@ router.post("/login", async(req, res)=>{
     }
 })
 
+router.get("/logout", async(req, res)=>{
+  try {
+    await AuthController.Logout(req, res);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Err "+error });
+  }
+})
+
 module.exports = router;
