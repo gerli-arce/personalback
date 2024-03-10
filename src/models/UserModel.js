@@ -19,7 +19,7 @@ const User = sequelize.define("user", {
     allowNull: false,
   },
   password: {
-    type: DataTypes.STRING(120),
+    type: DataTypes.STRING(320),
     allowNull: false,
   },
   email: {
@@ -133,7 +133,7 @@ User.belongsTo(People, {
 // });
 
 // Sincronizar el modelo con la base de datos
-User.sync({ force : true})
+User.sync({ alter : true})
   .then(() => {
     console.log("Tabla users creada con éxito");
   })

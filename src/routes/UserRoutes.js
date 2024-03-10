@@ -47,7 +47,7 @@ router.put('/users/:id', async(req, res) => {
   try {
     await UsersController.Update(req, res)
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error: '+error });
   }
 });
 

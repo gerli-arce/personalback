@@ -85,7 +85,7 @@ const People = sequelize.define("peoples", {
 //   targetKey: "id",
 // });
 
-People.sync()
+People.sync({alter: true})
   .then(() => {
     console.log("Tabla people creada con éxito");
   })

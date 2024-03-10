@@ -74,10 +74,12 @@ const Update = async (req, res) => {
       if (!request) {
         return;
       }
+
+      request.password = await generatePasswordHash(request.password);
+      request.update_date = getDateTime();
       var response = await updateUser(req.params.id, request);
-      var {password, ...resp} = response;
       if (response) {
-        res.json(resp);
+        res.json(response);
       } else {
         res.status(404).json({ error: "Usuario no exciste" });
       }
