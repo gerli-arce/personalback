@@ -1,10 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UsersService = require('../services/UserService');
-
 const UsersController = require('../controllers/UsersController')
-
-const {ValRequestUser} = require("../validations/validationRequest");
 
 router.get('/', async (req, res) => {
     try {
