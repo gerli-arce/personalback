@@ -57,11 +57,60 @@ const jwtValidation = (req, res, next) => {
   }
 };
 
-const authorization = (module, permission) => {
+function checkPermissions(permissions, branch, view, permission) {
+  try {
+    let status = false;
+    let root = false;
+    let admin = false;
+
+    if (permissions.hasOwnProperty("root")) {
+      root = true;
+    }
+
+    if (permissions.hasOwnProperty("admin")) {
+      admin = true;
+      if (view === "system") {
+        admin = false;
+      }
+    }
+
+    for (const branch_ of permissions) {
+      if (branch_.hasOwnProperty(branch)) {
+        for (const views_ of branch_[branch]) {
+          if (views_.hasOwnProperty(view)) {
+            const canReadUsers = views_[view][permission];
+            status = canReadUsers;
+            break;
+          }
+        }
+      }
+    }
+
+    return status || root || admin;
+  } catch (error) {
+    console.error("Error checking permissions:", error);
+    return false;
+  }
+}
+
+const authorization = (view, permission) => {
   return (req, res, next) => {
-    const permissions = JSON.parse(req.cookies.permissions);
-    console.log("permissions: " + permissions);
-    next();
+    try {
+      const permissions = JSON.parse(req.cookies?.permissions);
+      if (!permissions) {
+        res.status(401).json({ error: "Los permisos deven que ser enviados" });
+      }
+      const branch = req.headers?.branch;
+      if (!branch) {
+        res.status(401).json({ error: "Los headers deven ser enviados" });
+      }
+      console.log("branch: " + branch);
+      console.log("permissions: " + permissions);
+      // const authorized = checkPermissions(permissions, branch, view, permission);
+      next();
+    } catch (error) {
+      console.error("Error checking permissions:", error);
+    }
   };
 };
 
