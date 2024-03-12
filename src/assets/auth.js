@@ -57,66 +57,123 @@ const jwtValidation = (req, res, next) => {
   }
 };
 
-function checkPermissions(permissions, branch, view, permission) {
-  try {
-    let status = false;
-    let root = false;
-    let admin = false;
+function checkPermissions(permiss, branch, view, permission) {
+  const permissions = JSON.parse(permiss)
+  console.log("**Comprobando permisos:**");
+  console.log("  - Rama:", branch);
+  console.log("  - Vista:", view);
+  console.log("  - Permiso:", permissions.root);
 
+  try {
+    const json = JSON.stringify(permissions);
+    console.log("JSON válido:", json);
+  } catch (error) {
+    console.error("Error al validar JSON:", error);
+    console.error("El objeto 'permissions' puede estar mal formateado");
+  }
+
+  let status = false;
+  let root = false;
+  let admin = false;
+
+  try {
     if (permissions.hasOwnProperty("root")) {
       root = true;
+      console.log("  - Permiso 'root' encontrado");
+      return true; // Return true immediately for root permission
+    } else {
+      console.log("  - Permiso 'root' no encontrado");
     }
 
     if (permissions.hasOwnProperty("admin")) {
       admin = true;
+      console.log("  - Permiso 'admin' encontrado");
       if (view === "system") {
         admin = false;
+        console.log("  - Permiso 'admin' deshabilitado para vista 'system'");
       }
+    } else {
+      console.log("  - Permiso 'admin' no encontrado");
     }
 
-    for (const branch_ of permissions) {
-      if (branch_.hasOwnProperty(branch)) {
-        for (const views_ of branch_[branch]) {
-          if (views_.hasOwnProperty(view)) {
-            const canReadUsers = views_[view][permission];
-            status = canReadUsers;
-            break;
+    // Iterate through branches and views for specific permission
+    for (const branchKey in permissions) {
+      console.log("  - Revisando rama:", branchKey);
+      if (branchKey === branch) {
+        // Check for matching branch
+        console.log("    - Rama coincide");
+        const branchData = permissions[branchKey];
+        for (const viewKey in branchData) {
+          console.log("    - Revisando vista:", viewKey);
+          if (viewKey === view) {
+            // Check for matching view
+            console.log("      - Vista coincide");
+            const viewData = branchData[viewKey];
+            if (
+              viewData.hasOwnProperty(permission) &&
+              viewData[permission] === true
+            ) {
+              status = true;
+              console.log("      - Permiso encontrado:", permission);
+              break; // Exit nested loops if permission found
+            } else {
+              console.log("      - Permiso no encontrado:", permission);
+            }
           }
         }
       }
     }
-
-    return status || root || admin;
   } catch (error) {
     console.error("Error checking permissions:", error);
     return false;
   }
+
+  // Return final result based on status, root, or admin
+  console.log("**Resultado final:**", status || root || admin);
+  return status || root || admin;
 }
 
 const authorization = (view, permission) => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
+    // Haz que el middleware sea asíncrono
     try {
       const permissions = JSON.parse(req.cookies?.permissions);
       if (!permissions) {
-        res.status(401).json({ error: "Los permisos deven que ser enviados" });
+        return res
+          .status(401)
+          .json({ error: "Los permisos deben ser enviados" });
       }
       const branch = req.headers?.branch;
       if (!branch) {
-        res.status(401).json({ error: "Los headers deven ser enviados" });
+        return res
+          .status(401)
+          .json({ error: "Los headers deben ser enviados" });
       }
       console.log("branch: " + branch);
       console.log("permissions: " + permissions);
-      // const authorized = checkPermissions(permissions, branch, view, permission);
-      next();
+
+      const authorized = checkPermissions(
+        permissions,
+        branch,
+        view,
+        permission
+      );
+      if (authorized) {
+        return next();
+      }
+      return res
+        .status(401)
+        .json({ error: "No tienes permisos para realizar esta acción" });
     } catch (error) {
-      console.error("Error checking permissions:", error);
+      console.error("Error al verificar permisos:", error);
+      return res.status(500).json({ error: "Error interno del servidor" }); // Maneja errores inesperados
     }
   };
 };
-
 module.exports = {
   generatePasswordHash,
   comparePasswordToHash,
   jwtValidation,
   authorization,
+  checkPermissions,
 };
