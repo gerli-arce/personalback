@@ -40,35 +40,17 @@ const Login = async (req, res) => {
       key
     );
 
+    const role = await Role.findByPk(user._role);
+
     var response = {};
     response.data = user;
-    // response.data.auth_token = token;
+    response.data.auth_token = token;
+    response.role = role;
     response.data.password = undefined;
     response.message = "Operacion correcta";
     response.status = 200;
-
-    const expires = moment().endOf("month").toDate();
-    res.cookie("auth_token", token, {
-      expires,
-      httpOnly: true,
-      // secure: true, // Comenta esta línea para pruebas locales
-    });
-
-    res.cookie("user", JSON.stringify(response)),
-      {
-        expires,
-        httpOnly: true,
-        // secure: true, // Comenta esta línea para pruebas locales
-      };
-
-    const role = await Role.findByPk(user._role);
-
-    res.cookie("permissions", JSON.stringify(role.permissions), {
-      expires,
-      httpOnly: true,
-      // secure: true, // Comenta esta línea para pruebas locales
-    });
-
+    
+  
     res.json(response);
   } catch (error) {
     res
