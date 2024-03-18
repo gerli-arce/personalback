@@ -1,4 +1,4 @@
-const { User, Role } = require("../../models");
+const { User, Role, Branch } = require("../../models");
 const { comparePasswordToHash } = require("../../assets/auth");
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
@@ -29,7 +29,7 @@ const Login = async (req, res) => {
 
     const sub = user.id;
     const name = user.name;
-    const exp = moment().add(1, "minutes").unix();
+    const exp = moment().add(30, 'days').unix();
 
     const token = await jwt.sign(
       {
@@ -41,16 +41,17 @@ const Login = async (req, res) => {
     );
 
     const role = await Role.findByPk(user._role);
+    const branch = await Branch.findByPk(user._branch);
 
     var response = {};
     response.data = user;
     response.data.auth_token = token;
     response.role = role;
+    response.branch = branch;
     response.data.password = undefined;
     response.message = "Operacion correcta";
     response.status = 200;
-    
-  
+
     res.json(response);
   } catch (error) {
     res

@@ -34,31 +34,61 @@ const comparePasswordToHash = async (password, hash) => {
   });
 };
 
+// const jwtValidation = (req, res, next) => {
+//   try {
+  
+//     const token = req.cookies.auth_token;
+//     console.log("token: " + JSON.stringify(token));
+//     console.log("key: " + key);
+//     const validaPassword = jwt.verify(token, key);
+//     console.log(validaPassword);
+//     next();
+//   } catch (error) {
+//     if (error instanceof jwt.TokenExpiredError) {
+//       res.status(401).json({ error: "Token expirado" });
+//     } else if (error instanceof jwt.JsonWebTokenError) {
+//       res
+//         .status(401)
+//         .json({ error: "Token invalido, por favor inicie sesión" });
+//     } else {
+//       res
+//         .status(400)
+//         .json({ error: "Ocurrio un error en la operación: " + error });
+//     }
+//   }
+// };
+
 const jwtValidation = (req, res, next) => {
   try {
-    const token = req.cookies.auth_token;
+    // Extract the token from the Authorization header
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: "Token ausente o formato inválido" });
+    }
+
+    const token = authHeader.split(' ')[1]; // Extract the token after 'Bearer '
     console.log("token: " + JSON.stringify(token));
-    console.log("key: " + key);
-    const validaPassword = jwt.verify(token, key);
-    console.log(validaPassword);
+
+    // Verify the token
+    const decoded = jwt.verify(token, key); // Replace 'key' with your actual secret key
+
+    console.log("Token validado para usuario:", decoded);
+    req.user = decoded; 
+
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       res.status(401).json({ error: "Token expirado" });
     } else if (error instanceof jwt.JsonWebTokenError) {
-      res
-        .status(401)
-        .json({ error: "Token invalido, por favor inicie sesión" });
+      res.status(401).json({ error: "Token inválido o malformado" });
     } else {
-      res
-        .status(400)
-        .json({ error: "Ocurrio un error en la operación: " + error });
+      res.status(400).json({ error: "Ocurrió un error en la validación: " + error });
     }
   }
 };
 
-function checkPermissions(permiss, branch, view, permission) {
-  const permissions = JSON.parse(permiss)
+function checkPermissions(permissions, branch, view, permission) {
   console.log("**Comprobando permisos:**");
   console.log("  - Rama:", branch);
   console.log("  - Vista:", view);
@@ -137,20 +167,25 @@ const authorization = (view, permission) => {
   return async (req, res, next) => {
     // Haz que el middleware sea asíncrono
     try {
-      const permissions = JSON.parse(req.cookies?.permissions);
+      // const authHeader = req.headers.authorization;
+      const role = JSON.parse(req.headers.role);
+      const permissions = JSON.parse(role.permissions);
+      
       if (!permissions) {
         return res
           .status(401)
           .json({ error: "Los permisos deben ser enviados" });
       }
-      const branch = req.headers?.branch;
+      const branchJson = JSON.parse(req.headers.branch);
+      const branch = branchJson.correlative;
       if (!branch) {
         return res
           .status(401)
           .json({ error: "Los headers deben ser enviados" });
       }
+
       console.log("branch: " + branch);
-      console.log("permissions: " + permissions);
+      console.log("permissions: " + JSON.stringify(permissions));
 
       const authorized = checkPermissions(
         permissions,
